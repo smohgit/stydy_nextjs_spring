@@ -19,7 +19,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class ApiSecurityConfig {
-//	private final JwtAuthorizationFilter jwtAuthorizationFilter;
+	private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
 	@Bean
 	SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
@@ -35,13 +35,13 @@ public class ApiSecurityConfig {
 				)
 				.csrf(csrf -> csrf.disable()) // csrf 토큰 끄기
 //				.cors(cors -> cors.configurationSource(corsConfigurationSource())) // cors 설정 추가
-//				.httpBasic(httpBasic -> httpBasic.disable()) // httpBasic 로그인 방식 끄기
-//				.formLogin(formLogin -> formLogin.disable()) // 폼 로그인 방식 끄기
-//				.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(STATELESS)) // 세션 끄기
-//				.addFilterBefore(
-//						jwtAuthorizationFilter, // 액세스 토큰을 이용한 로그인 처리
-//						UsernamePasswordAuthenticationFilter.class
-//				)
+				.httpBasic(httpBasic -> httpBasic.disable()) // httpBas ic 로그인 방식 끄기
+				.formLogin(formLogin -> formLogin.disable()) // 폼 로그인 방식 끄기
+				.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(STATELESS)) // 세션 끄기
+				.addFilterBefore(
+						jwtAuthorizationFilter, // 액세스 토큰을 이용한 로그인 처리
+						UsernamePasswordAuthenticationFilter.class
+				)
 		;
 		return http.build();
 	}
