@@ -1,7 +1,6 @@
 package com.rest.domain.member.controller;
 
 import com.rest.domain.member.dto.MemberDto;
-import com.rest.domain.member.entity.Member;
 import com.rest.domain.member.service.MemberService;
 import com.rest.global.reData.RsData;
 import jakarta.servlet.http.HttpServletResponse;
