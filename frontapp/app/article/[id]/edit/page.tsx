@@ -2,6 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import {useParams} from "next/navigation";
+import api from "@/app/utils/api";
 
 export default function ArticleEdit() {
   const params = useParams();
@@ -17,27 +18,23 @@ export default function ArticleEdit() {
   };
 
   const fetchArticles = () => {
-    fetch(`http://localhost:8090/api/v1/articles/${params.id}`)
-      .then(result => result.json())
-      .then(result => setArticle(result.data.articles))
+      api.get(`/articles/${params.id}`)
+      .then(response => setArticle(response.data.data.articles))
+      .catch (err => {
+        console.log(err)
+      })
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const response = await fetch(`http://localhost:8090/api/v1/articles/${params.id}`, {
-      method: "PATCH",
-      headers: {
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify(article)
-    })
-
-    if (response.ok) {
-      alert('success update')
-    }else{
-      alert('update fail')
-    }
+    await api.patch(`/articles/${params.id}`, article)
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   return (

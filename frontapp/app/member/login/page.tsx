@@ -2,6 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import {useParams} from "next/navigation";
+import api from "@/app/utils/api";
 
 export default function Login() {
   const [user, setUser] = useState({username: '', password: ''});
@@ -14,33 +15,11 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const response = await fetch(`http://localhost:8090/api/v1/members/login`, {
-      method: "POST",
-      credentials: "include", // 인증 정보 함께 보내는 경우 정의 필요
-      headers: {
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify(user)
-    })
-
-    if (response.ok) {
-      alert('success')
-    }else{
-      alert('fail')
-    }
+    await api.post("/members/login", user)
   };
 
   const handleLogout = async () => {
-    const response = await fetch(`http://localhost:8090/api/v1/members/logout`, {
-      method: "POST",
-      credentials: "include", // 인증 정보 함께 보내는 경우 정의 필요
-    })
-
-    if (response.ok) {
-      alert('success')
-    }else{
-      alert('fail')
-    }
+    await api.post("/members/logout")
   };
   return (
     <>

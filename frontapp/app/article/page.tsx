@@ -2,36 +2,31 @@
 
 import React, {useEffect, useState} from 'react';
 import Link from "next/link";
+import api from "@/app/utils/api";
 
 
 
 const Article = () => {
-  const [articles, setArticle] = useState([]);
+  const [articles, setArticles] = useState([]);
 
   useEffect(() => {
     fetchArticles()
   }, [])
 
   const fetchArticles = () => {
-    fetch('http://localhost:8090/api/v1/articles')
-      .then(result => result.json())
-      .then(result => setArticle(result.data.articles))
+    api.get("/articles")
+      .then(
+        response => setArticles(response.data.data.articles)
+      )
+      .catch (err => {
+        console.log(err)
+      })
   }
 
   const handleDelete = async (id) => {
-    const response = await fetch(`http://localhost:8090/api/v1/articles/${id}`, {
-      method: 'DELETE',
-      headers : {
-        'Content-Type': 'application/json'
-      }
-    })
-
-    if(response.ok){
-      alert('success')
-      fetchArticles()
-    }else{
-      alert('error')
-    }
+    await api.delete(`/articles/${id}`)
+    fetchArticles()
+    
   };
   return (
     <>
@@ -69,21 +64,14 @@ function ArticleForm({fetchArticles}) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:8090/api/v1/articles", {
-      method: "POST",
-      headers: {
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify(article)
-    })
-
-    if (response.ok) {
-      alert('ok')
-      await fetchArticles()
-      setArticle(initArticle)
-    }else{
-      alert('error')
-    }
+    await api.post("/articles", article)
+      .then(function (response) {
+        fetchArticles();
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   return (
