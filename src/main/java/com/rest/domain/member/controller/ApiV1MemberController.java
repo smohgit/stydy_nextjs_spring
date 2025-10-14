@@ -3,13 +3,12 @@ package com.rest.domain.member.controller;
 import com.rest.domain.member.dto.MemberDto;
 import com.rest.domain.member.service.MemberService;
 import com.rest.global.reData.RsData;
-import jakarta.servlet.http.HttpServletResponse;
+import com.rest.global.rq.Rq;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ApiV1MemberController {
 	private final MemberService memberService;
+	private final Rq rq;
 
 	@Getter
 	public static class LoginRequestBody {
@@ -33,20 +33,14 @@ public class ApiV1MemberController {
 	}
 
 	@PostMapping("/login")
-	public RsData<LoginResponseBody> login(@Valid @RequestBody LoginRequestBody requestBody, HttpServletResponse resp) {
+	public RsData<LoginResponseBody> login(@Valid @RequestBody LoginRequestBody requestBody) {
 		//username, password => accessToken
 		RsData<MemberService.AuthAndMakeTokenResponseBody> authAndMakeTokenRs = memberService.authAndMakeTokens(requestBody.getUsername(), requestBody.getPassword());
 
 		// client에 쿠키로 accessToken전달 
-		ResponseCookie cookie = ResponseCookie.from("accessToken", authAndMakeTokenRs.getData().getAccessToken())
-				.path("/")
-				.sameSite("None")
-				.secure(true)
-				.httpOnly(true)
-				.build();
-
-		resp.addHeader("Set-Cookie", cookie.toString());
-
+		rq.addHeaderCookie("accessToken", authAndMakeTokenRs.getData().getAccessToken());
+		rq.addHeaderCookie("refreshToken", authAndMakeTokenRs.getData().getRefreshToken());
+		
 		return RsData.of(
 				authAndMakeTokenRs.getResultCode(),
 				authAndMakeTokenRs.getMsg(),
@@ -57,5 +51,13 @@ public class ApiV1MemberController {
 	@GetMapping("/me")
 	public RsData<MemberDto> me() {
 		return RsData.of("", "");
+	}
+
+	@PostMapping("/logout")
+	public RsData<Void> logout() {
+		rq.removeCrossDomainCookie("accessToken");
+		rq.removeCrossDomainCookie("refreshToken");
+
+		return RsData.of("200", "로그아웃 성공");
 	}
 }

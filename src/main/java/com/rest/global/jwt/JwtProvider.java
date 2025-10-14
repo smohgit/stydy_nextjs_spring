@@ -19,20 +19,21 @@ import java.util.Map;
 public class JwtProvider {
 	@Value("${custom.jwt.secretKey}")
 	private String secretKeyOrigin;
-	
+
 	private SecretKey cachedSecretKey;
 
 	public SecretKey getSecretKey() {
-		if ( cachedSecretKey == null ) cachedSecretKey = _getSecretKey();
+		if (cachedSecretKey == null) cachedSecretKey = _getSecretKey();
 		return cachedSecretKey;
 	}
+
 	public SecretKey _getSecretKey() {
 		String keyBase64Encoded = Base64.getEncoder().encodeToString(secretKeyOrigin.getBytes());
 		return Keys.hmacShaKeyFor(keyBase64Encoded.getBytes());
 	}
 
 	public String genRefreshToken(Member member) {
-		return genToken(member, 60 * 60 * 24 * 365 *1);
+		return genToken(member, 60 * 60 * 24 * 365 * 1);
 	}
 
 	public String genAccessToken(Member member) {
@@ -44,10 +45,10 @@ public class JwtProvider {
 
 		claims.put("id", member.getId());
 		claims.put("username", member.getUsername());
-		
+
 		long now = new Date().getTime();
 
-		Date accessTokenExpiresIn  = new Date(now + 1000L * seconds);
+		Date accessTokenExpiresIn = new Date(now + 1000L * seconds);
 		return Jwts.builder()
 				.claim("body", Util.json.toStr(claims))
 				.setExpiration(accessTokenExpiresIn)
@@ -61,7 +62,7 @@ public class JwtProvider {
 					.setSigningKey(getSecretKey())
 					.build()
 					.parseClaimsJws(token);
-		} catch (Exception e)  {
+		} catch (Exception e) {
 			return false;
 		}
 		return true;
