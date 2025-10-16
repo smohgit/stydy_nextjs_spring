@@ -25,8 +25,7 @@ const Article = () => {
 
   const handleDelete = async (id) => {
     await api.delete(`/articles/${id}`)
-    fetchArticles()
-    
+      .then(() => fetchArticles())
   };
   return (
     <>

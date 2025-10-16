@@ -25,9 +25,10 @@ export default function Login() {
     <>
       <h4>로그인</h4>
       <form onSubmit={handleSubmit}>
-        <input type="text"  name="username" onChange={handleChange} placeholder="아이디"></input>
-        <input type="password"  name="password" onChange={handleChange} placeholder="비밀번호"></input>
+        <input type="text" name="username" onChange={handleChange} placeholder="아이디"></input>
+        <input type="password" name="password" onChange={handleChange} placeholder="비밀번호"></input>
         <input type="submit" value="로그인"/>
+        <br/>
         <button onClick={handleLogout}>로그아웃</button>
       </form>
 

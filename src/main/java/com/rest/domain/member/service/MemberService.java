@@ -39,7 +39,7 @@ public class MemberService {
 
 	public SecurityUser getUserFromAccessToken(String accessToken) {
 		Map<String, Object> payloadBody = jwtProvider.getClaims(accessToken);
-		long id = (long) payloadBody.get("id");
+		long id = (int) payloadBody.get("id");
 		String username = (String) payloadBody.get("username");
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		
