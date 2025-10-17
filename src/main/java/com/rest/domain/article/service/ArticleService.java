@@ -27,6 +27,7 @@ public class ArticleService {
 	@Transactional
 	public RsData<Article> create(Member member, String subject, String content) {
 		Article article = Article.builder()
+				.author(member)
 				.subject(subject)
 				.content(content)
 				.build();

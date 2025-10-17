@@ -1,10 +1,11 @@
 'use client'
 
 import React, {useEffect, useState} from 'react';
-import {useParams} from "next/navigation";
+import {useParams, useRouter} from "next/navigation";
 import api from "@/app/utils/api";
 
 export default function Login() {
+  const router = useRouter();
   const [user, setUser] = useState({username: '', password: ''});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,10 +17,15 @@ export default function Login() {
     e.preventDefault();
 
     await api.post("/members/login", user)
+      .then(res => {
+        alert("로그인 되었습니다.");
+        router.push("/");
+      })
   };
 
   const handleLogout = async () => {
     await api.post("/members/logout")
+      .then(res => alert("로그아웃 되었습니다."))
   };
   return (
     <>

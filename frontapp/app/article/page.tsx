@@ -5,7 +5,6 @@ import Link from "next/link";
 import api from "@/app/utils/api";
 
 
-
 const Article = () => {
   const [articles, setArticles] = useState([]);
 
@@ -31,7 +30,7 @@ const Article = () => {
     <>
       <ArticleForm fetchArticles={fetchArticles}/>
 
-      <h4>번호 / 제목 / 생성일</h4>
+      <h4>번호 / 제목 / 생성자 / 생성일</h4>
       {articles.length == 0 ? (
         <p>현재 게시물이 없습니다.</p>
       ) : (
@@ -39,7 +38,7 @@ const Article = () => {
           {
             articles.map((article) =>
               <li key={article.id}>
-                {article.id} / <Link href={`/article/${article.id}`}>{article.subject}</Link> / {article.createdDate}
+                {article.id} / <Link href={`/article/${article.id}`}>{article.subject}</Link> / {article.author} / {article.createdDate}
                 <button onClick={() => handleDelete(article.id)}> 삭제 </button>
               </li>
             )}
@@ -62,7 +61,7 @@ function ArticleForm({fetchArticles}) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+console.log("???")
     await api.post("/articles", article)
       .then(function (response) {
         fetchArticles();
